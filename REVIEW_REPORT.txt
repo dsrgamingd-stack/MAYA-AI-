@@ -1,0 +1,28 @@
+MAYA AI v9.1 — STATIC REVIEW REPORT
+Date: 2026-11-25
+
+INPUT
+- MAYA_AI_v9-1.zip
+- 53 archive entries; Java sources and Android resources extracted successfully.
+
+CHECKS PASSED
+- ZIP listing/extraction completed.
+- All XML files parsed successfully.
+- termux_build.sh passed `bash -n`.
+- No Gradle wrapper is included.
+
+CHANGES MADE
+1. BootReceiver now posts a notification instead of launching an Activity directly from BOOT_COMPLETED. Tapping the notification opens MainActivity with the existing boot extra. This avoids relying on background activity launch and microphone FGS starts from boot.
+2. Boot setting description now accurately says a notification is shown and user tap is required.
+3. Termux build script now checks JDK 17, Android SDK Platform 35, Gradle 8.x and output APK existence; it copies to Download/MayaAI-debug.apk. Removed an unrelated hard-coded $HOME/maya/build.gradle version rewrite.
+4. Build guide and README now state the actual implementation limits and correct APK filename.
+
+IMPORTANT FINDINGS
+- README had conflicting claims: its initial section described a minimal starter and said Gemini API integration was absent, while later changelog claimed broader features. The current source contains Gemini HTTP generateContent/streaming code, but no verified Gemini Live session.
+- MayaAccessService.onAccessibilityEvent() is empty; accessibility automation is not a complete general-purpose UI agent.
+- MayaNotifService reads notification text for a small package allowlist; it does not provide full WhatsApp/Telegram chat or file access.
+- Boot-time automatic microphone activation cannot be guaranteed under Android 14+ background/while-in-use restrictions. The patched flow requires a user tap.
+- No Android SDK, android.jar, Gradle executable or Gradle wrapper JAR was present in this build environment. Therefore Gradle compilation, APK generation and on-device testing could not be performed.
+
+NOT TESTED
+- Java/Android compilation, installation, runtime behavior, Vivo Y18 OEM restrictions, Gemini API credentials/network behavior, telephony, notification access, accessibility actions, Camera2 hardware and battery/background behavior.
